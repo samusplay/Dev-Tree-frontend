@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { useForm } from 'react-hook-form'
-import axios,{isAxiosError} from 'axios'
+import {isAxiosError} from 'axios'
+import {toast}from 'sonner'
 import type{RegisterForm}from '../types'
 import ErrorMessage from "../components/ErrorMessage";
+import api from "../config/axios";
 export default function RegisterView() {
     //Objeto para errores
     const initialValues= {
@@ -28,15 +30,18 @@ export default function RegisterView() {
         //Funcion para recuperar los datos del backend obtener una respuesta
         //Entramos directamente a data
         try{
-            const {data}=await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`,formData)
+            const {data}=await api.post(`/auth/register`,formData)
             console.log(data)
+            //Agregamos Toast y le pasamos data la respuesta
+            toast.success(data)
             //reiniciar el formulario
             reset()
 
         //Traer los errores desde el backend
         }catch(error){
             if(isAxiosError(error)&&error.response){
-                console.log(error.response.data.error)
+                //Mostrar mensajes desde el backend
+                toast.error(error.response.data.error)
 
             }
 
