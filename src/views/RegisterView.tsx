@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useForm } from 'react-hook-form'
-import axios from 'axios'
+import axios,{isAxiosError} from 'axios'
 import type{RegisterForm}from '../types'
 import ErrorMessage from "../components/ErrorMessage";
 export default function RegisterView() {
@@ -24,11 +24,17 @@ export default function RegisterView() {
     //funcion interna cuando haga el submit debe ser asincrona
     const handleRegister = async(formData:RegisterForm) => {
         //Funcion para recuperar los datos del backend obtener una respuesta
+        //Entramos directamente a data
         try{
-            const response=await axios.post('http://localhost:4000/auth/register',formData)
-            console.log(response)
+            const {data}=await axios.post('http://localhost:4000/auth/register',formData)
+            console.log(data)
 
+        //Traer los errores desde el backend
         }catch(error){
+            if(isAxiosError(error)&&error.response){
+                console.log(error.response.data.error)
+
+            }
 
         }
     }
