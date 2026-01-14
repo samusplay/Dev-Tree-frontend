@@ -16,18 +16,22 @@ export default function RegisterView() {
    
     //React Hook from par validar a los inputs
     //Usar Generics
-    const { register, watch, handleSubmit, formState: { errors } } = useForm<RegisterForm>({ defaultValues: initialValues })
+    const { register, watch, reset,handleSubmit, formState: { errors } } = useForm<RegisterForm>({ defaultValues: initialValues })
 
      //Utilizar watch para confirmar si las contraseñas coinciden escuchar valores
     const password=watch('password')
 
+    //Log para ver la variable de entorno
+    
     //funcion interna cuando haga el submit debe ser asincrona
     const handleRegister = async(formData:RegisterForm) => {
         //Funcion para recuperar los datos del backend obtener una respuesta
         //Entramos directamente a data
         try{
-            const {data}=await axios.post('http://localhost:4000/auth/register',formData)
+            const {data}=await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`,formData)
             console.log(data)
+            //reiniciar el formulario
+            reset()
 
         //Traer los errores desde el backend
         }catch(error){
