@@ -16,10 +16,8 @@ export default function LoginView() {
     const handleLogin=async(formData:LoginForm)=>{
         try{
             const {data}=await api.post(`/auth/login`,formData)
-            console.log(data)
-            //Agregamos Toast y le pasamos data la respuesta
-            toast.success(data)
-            //reiniciar el formulario
+            //Agregamos el guardado en localstorage
+            localStorage.setItem('AUTH_TOKEN',data)
             
 
         //Traer los errores desde el backend
