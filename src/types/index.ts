@@ -11,3 +11,9 @@ export type RegisterForm=Pick<User,'handle'|'email'|'name'>&{
     password:string
     password_confirmation:string
 }
+
+//Type de login
+
+export type LoginForm=Pick<User,'email'>&{
+     password:string
+}
