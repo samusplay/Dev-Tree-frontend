@@ -1,4 +1,4 @@
-import { Link, data, Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { Toaster } from "sonner";
 import NavigationTabs from "./NavigationTabs";
 import type { User } from "../types";
