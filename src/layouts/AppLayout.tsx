@@ -23,6 +23,7 @@ export default function AppLayout() {
         return <Navigate to={'/auth/login'} />
     }
     //pasarle los props de data y renderiza el componente
+    console.log(data)
     if(data) return <DevTree data={data} />
         
     

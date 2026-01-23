@@ -1,11 +1,37 @@
-
+import { useForm } from 'react-hook-form'
+import ErrorMessage from '../components/ErrorMessage'
+import { getUser } from '../api/DevTreeAPI'
+import { useQueryClient } from '@tanstack/react-query'
+import type { ProfileForm, User } from '../types'
 
 export default function ProfileView() {
+    //Usar QueryClient para tomar los datos cacheados en el navegador
+    const QueryClient=useQueryClient()
+    //pasarle como arreglo la key
+    //Gratizamos type srcipt que llega el dato con !
+    const data:User=QueryClient.getQueryData(['user'])!
+    console.log(data)
+   
+
+
+    //pasrale los valores inciales
+    const { register, handleSubmit, formState: { errors } } = useForm<ProfileForm>({
+        //actaulizamos el type para llamar descripciojn
+        defaultValues: {
+            handle: data.handle,
+            description: data.description
+        }
+    })
+    //Creamos la funcion para el handle submit
+    const handleUserProfileForm = (formData:ProfileForm) => {
+        //agregarl el type
+        console.log(formData)
+    }
 
     return (
-        <form 
+        <form
             className="bg-white p-10 rounded-lg space-y-5"
-            onSubmit={() => {}}
+            onSubmit={handleSubmit(handleUserProfileForm)}
         >
             <legend className="text-2xl text-slate-800 text-center">Editar Información</legend>
             <div className="grid grid-cols-1 gap-2">
@@ -16,7 +42,14 @@ export default function ProfileView() {
                     type="text"
                     className="border-none bg-slate-100 rounded-lg p-2"
                     placeholder="handle o Nombre de Usuario"
+                    //codigo de React
+                    {...register('handle', {
+                        required: "El nombre de Usuario es obligatorio"
+                    })}
+                //Los errores los renderizamos atraves del componente 
                 />
+
+                {errors.handle && <ErrorMessage>{errors.handle.message}</ErrorMessage>}
             </div>
 
             <div className="grid grid-cols-1 gap-2">
@@ -26,7 +59,11 @@ export default function ProfileView() {
                 <textarea
                     className="border-none bg-slate-100 rounded-lg p-2"
                     placeholder="Tu Descripción"
+                    {...register('description', {
+                        required: "La descripcion es obligatoria"
+                    })}
                 />
+                {errors.description && <ErrorMessage>{errors.description.message}</ErrorMessage>}
             </div>
 
             <div className="grid grid-cols-1 gap-2">
@@ -39,7 +76,7 @@ export default function ProfileView() {
                     name="handle"
                     className="border-none bg-slate-100 rounded-lg p-2"
                     accept="image/*"
-                    onChange={ () => {} }
+                    onChange={() => { }}
                 />
             </div>
 
