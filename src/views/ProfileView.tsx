@@ -1,7 +1,9 @@
 import { useForm } from 'react-hook-form'
 import ErrorMessage from '../components/ErrorMessage'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQueryClient,useMutation } from '@tanstack/react-query'
 import type { ProfileForm, User } from '../types'
+import { updateProfile, } from '../api/DevTreeAPI'
+import { toast } from 'sonner'
 
 export default function ProfileView() {
     //Usar QueryClient para tomar los datos cacheados en el navegador
@@ -21,10 +23,28 @@ export default function ProfileView() {
             description: data.description
         }
     })
+    //Usando de TanStackQuery useMutations
+    const updateProfileMutation=useMutation({
+        //la funcion que va hacer en base a esa mutacion 
+        mutationFn:updateProfile,
+        //extraemos configuracion
+        onError:(error)=>{
+            //call back si hubo un error y mostramos con un toast
+            toast.error(error.message)
+        },
+        //pasarle data que se recupera desde la api
+        onSuccess:(data)=>{
+            toast.success(data)
+            //usamos queryclient para eliminar vdatos cahados
+            //hacerlo mas dinamico
+            QueryClient.invalidateQueries({queryKey:['user']})
+        }
+    })
     //Creamos la funcion para el handle submit
     const handleUserProfileForm = (formData:ProfileForm) => {
-        //agregarl el type
-        console.log(formData)
+        //agregamos mutacion 'PATCH'
+        updateProfileMutation.mutate(formData)
+
     }
 
     return (
