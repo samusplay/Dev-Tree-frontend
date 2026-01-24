@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import ErrorMessage from '../components/ErrorMessage'
 import { useQueryClient,useMutation } from '@tanstack/react-query'
 import type { ProfileForm, User } from '../types'
-import { updateProfile, } from '../api/DevTreeAPI'
+import { updateProfile, uploadImage, } from '../api/DevTreeAPI'
 import { toast } from 'sonner'
 
 export default function ProfileView() {
@@ -40,6 +40,28 @@ export default function ProfileView() {
             QueryClient.invalidateQueries({queryKey:['user']})
         }
     })
+    //Segunda Mutuacion para post imagenes
+    const uploadImageMutation=useMutation({
+        //la funcion que va hacer en base a esa mutacion 
+        mutationFn:uploadImage,
+        //extraemos configuracion
+        onError:(error)=>{
+            console.log(error)
+        },
+        //pasarle data que se recupera desde la api
+        onSuccess:(data)=>{
+             console.log(data)
+        }
+    })
+    const handleChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
+        //subir la informacion
+        //validacion si sube la imagen  o no
+        if(e.target.files){
+            //mandamos llamar la mutuacion cuando cambie la imagen
+            uploadImageMutation.mutate(e.target.files[0])
+        }
+    }
+
     //Creamos la funcion para el handle submit
     const handleUserProfileForm = (formData:ProfileForm) => {
         //agregamos mutacion 'PATCH'
@@ -95,7 +117,7 @@ export default function ProfileView() {
                     name="handle"
                     className="border-none bg-slate-100 rounded-lg p-2"
                     accept="image/*"
-                    onChange={() => { }}
+                    onChange={handleChange}
                 />
             </div>
 
