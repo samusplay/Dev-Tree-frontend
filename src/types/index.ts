@@ -5,9 +5,10 @@ export type User={
     email:string
     password:string
     description:string
+    image:string
 
 }
-
+//los pick como solo toman valores especificos no hay que hacer cambios
 export type RegisterForm=Pick<User,'handle'|'email'|'name'>&{
     password:string
     password_confirmation:string
