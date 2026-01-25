@@ -1,9 +1,9 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
-import ErrorMessage from '../components/ErrorMessage'
-import { useQueryClient,useMutation } from '@tanstack/react-query'
-import type { ProfileForm, User } from '../types'
-import { updateProfile, uploadImage, } from '../api/DevTreeAPI'
 import { toast } from 'sonner'
+import { updateProfile, uploadImage, } from '../api/DevTreeAPI'
+import ErrorMessage from '../components/ErrorMessage'
+import type { ProfileForm, User } from '../types'
 
 export default function ProfileView() {
     //Usar QueryClient para tomar los datos cacheados en el navegador
@@ -38,6 +38,7 @@ export default function ProfileView() {
             //usamos queryclient para eliminar vdatos cahados
             //hacerlo mas dinamico
             QueryClient.invalidateQueries({queryKey:['user']})
+
         }
     })
     //Segunda Mutuacion para post imagenes
@@ -46,11 +47,22 @@ export default function ProfileView() {
         mutationFn:uploadImage,
         //extraemos configuracion
         onError:(error)=>{
-            console.log(error)
+            toast.error(error.message)
         },
         //pasarle data que se recupera desde la api
         onSuccess:(data)=>{
-             console.log(data)
+            //optimistic Updates
+            //modificar los objetos que estan cachados
+             QueryClient.setQueryData(['user'],(prevData:User)=>{
+                //para optimizar el envio de la imagen pasa la info actualizada
+                return{
+                    //recupera lo cachado y lo mantiene
+                    ...prevData,
+                    image:data.image
+                }
+
+
+             })
         }
     })
     const handleChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
