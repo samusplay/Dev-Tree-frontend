@@ -6,10 +6,12 @@ import { classNames } from "../utils"
 type DevTreeInputProps = {
     //pasamos el objeto no el arreglo
     item: DevTreeLink
+    //firma de las funcionaliddes con sus valores
     handleUrlChange:(e:React.ChangeEvent<HTMLInputElement>)=>void
+    handleEnableLink:(socialNetwork:string)=>void
 }
-//va encontrar los prorps en ese Type extramos funcion
-export default function DevTreeInput({ item,handleUrlChange}: DevTreeInputProps) {
+//va encontrar los prorps en ese Type extramos funcion, luego extraemos al funcion via props
+export default function DevTreeInput({ item,handleUrlChange,handleEnableLink}: DevTreeInputProps) {
     return (
         <div className="bg-white shadow-sm p-5 flex items-center gap-3">
             <div
@@ -27,7 +29,8 @@ export default function DevTreeInput({ item,handleUrlChange}: DevTreeInputProps)
             />
             <Switch
                 checked={item.enabled}
-                onChange={() => { }}
+                //agregamos un call back hasta que se registre el evento
+                onChange={()=>handleEnableLink(item.name)}
                 className={classNames(
                     item.enabled ? 'bg-blue-500' : 'bg-gray-200',
                     'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
