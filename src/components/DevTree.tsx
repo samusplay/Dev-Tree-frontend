@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { Toaster } from "sonner";
 import type { SocialNetwork, User } from "../types";
@@ -12,7 +12,16 @@ type DevTreeProps={
 }
 export default function DevTree({data}:DevTreeProps){
     //renderizar links pasamos el valor inicial usar generic para que lo infiera
-    const [enabledlinks, setenablelinks]=useState<SocialNetwork[]>(JSON.parse(data.links).filter((item:SocialNetwork)=>item.enabled))
+    const [enabledlinks, setenablelinks]=useState<SocialNetwork[]>(JSON.parse(data.links).
+    filter((item:SocialNetwork)=>item.enabled))
+
+    //darle el comportamniento reactivo
+    useEffect(()=>{
+        setenablelinks((JSON.parse(data.links).
+    filter((item:SocialNetwork)=>item.enabled)))
+
+    //cada vez que cambie data ejuctamos el codigo
+    },[data])
 
     
     
