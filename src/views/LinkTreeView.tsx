@@ -1,11 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { updateProfile } from "../api/DevTreeAPI"
+
 import DevTreeInput from "../components/DevTreeInput"
 import { social } from "../data/social"
-import type { User } from "../types"
+import type { SocialNetwork, User } from "../types"
 import { isValidUrl } from "../utils"
+
+
 export default function LinkTreeView(){
     const [devTreeLinks,setDevTreeLinks]=useState(social)
     //llamos query client para obtener los datos cachados
@@ -26,6 +29,19 @@ export default function LinkTreeView(){
             toast.success('Actualizado correcatmente')
         },
     })
+    //iterar de que redes sociales el usuario ya puso
+    useEffect(()=>{
+        const updateData=devTreeLinks.map(item=>{
+            const userlink=JSON.parse(user.links).find((Link:SocialNetwork)=>Link.name ===item.name)
+            if(userlink){
+                return {...item, url:userlink.url,enabled:userlink.enabled}
+            }
+            return item
+        })
+        //seteamos en el estado
+        setDevTreeLinks(updateData)
+    }, [])
+    
 
     
     //valor que va cambiar el state de las redes sociales
@@ -34,6 +50,16 @@ export default function LinkTreeView(){
         const updatedLinks=devTreeLinks.map(link=>link.name===e.target.name?{...link,url:e.target.value}
              :link)
         setDevTreeLinks(updatedLinks)
+        queryclient.setQueryData(['user'],(prevData:User)=>{
+                return{
+                    //hacemos una copia de los datos
+                    ...prevData,
+                    //Cambiamos el tipo de dato a arreglo a string(todo el state)
+                    links:JSON.stringify(updatedLinks)
+                }
+
+            })
+        
 
     }
     //vooid no retorna nada ponerlo en los types
@@ -50,9 +76,7 @@ export default function LinkTreeView(){
                    toast.error('URL no valida') 
                 }
             }
-            return link
-
-            
+            return link            
         } )
             //agregamos al nuevo state
             setDevTreeLinks(updatedLinks)
