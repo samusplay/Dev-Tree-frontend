@@ -1,7 +1,7 @@
 import { isAxiosError } from "axios"
 
 import api from "../config/axios"
-import type { ProfileForm, User } from "../types"
+import type { User } from "../types"
 
 export async function getUser() {
     //variable del token
@@ -23,7 +23,7 @@ export async function getUser() {
 }
 
 //Debe pasar parametros
-export async function updateProfile(formData: ProfileForm) {
+export async function updateProfile(formData: User) {
     //variable del token
 
     try {

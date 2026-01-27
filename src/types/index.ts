@@ -6,6 +6,8 @@ export type User={
     password:string
     description:string
     image:string
+    links:string
+   
 
 }
 //los pick como solo toman valores especificos no hay que hacer cambios

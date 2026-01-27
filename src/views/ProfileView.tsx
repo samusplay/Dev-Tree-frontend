@@ -76,8 +76,13 @@ export default function ProfileView() {
 
     //Creamos la funcion para el handle submit
     const handleUserProfileForm = (formData:ProfileForm) => {
-        //agregamos mutacion 'PATCH'
-        updateProfileMutation.mutate(formData)
+        //usar query client par traer la instacia y reutilizar el endpoint
+        const user:User=QueryClient.getQueryData(['user'])!
+        //campos que se llegarian a cambiar
+        user.description=formData.description
+        user.handle=formData.handle
+        //agregamos mutacion 'PATCH' y mutamos con user
+        updateProfileMutation.mutate(user)
 
     }
 
