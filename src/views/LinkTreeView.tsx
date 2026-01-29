@@ -14,8 +14,7 @@ export default function LinkTreeView(){
     //llamos query client para obtener los datos cachados
     const queryclient=useQueryClient()
      const user:User=queryclient.getQueryData(['user'])!
-     //confirmacion 
-     console.log(user)
+     
 
     //mandar llamar los links atravez de una mutuacion
     const {mutate}=useMutation({
@@ -50,18 +49,13 @@ export default function LinkTreeView(){
         const updatedLinks=devTreeLinks.map(link=>link.name===e.target.name?{...link,url:e.target.value}
              :link)
         setDevTreeLinks(updatedLinks)
-        queryclient.setQueryData(['user'],(prevData:User)=>{
-                return{
-                    //hacemos una copia de los datos
-                    ...prevData,
-                    //Cambiamos el tipo de dato a arreglo a string(todo el state)
-                    links:JSON.stringify(updatedLinks)
-                }
-
-            })
+        
         
 
     }
+    //lo que esta en la base de datos
+    const links:SocialNetwork[]=JSON.parse(user.links)
+
     //vooid no retorna nada ponerlo en los types
     const handleEnableLink=(socialNetwork:string)=>{
         //usamos el state para indentificar la red social if a ternario
@@ -80,15 +74,73 @@ export default function LinkTreeView(){
         } )
             //agregamos al nuevo state
             setDevTreeLinks(updatedLinks)
-            //sincronizamos con el usurio cachados
+
+            //filtro
+            let updateItems:SocialNetwork[]=[]
+            //añadir id de cada red social acceder al arreglo y traer completo
+            const selectedSocialNetwork=updatedLinks.find(link=>link.name ===socialNetwork)
+            //si estamos habilitando la red social
+            if(selectedSocialNetwork?.enabled){
+                //si el elemento ya existe en el arreglo
+                const id=links.filter(link =>link.id).length+1
+                if(links.some(link=>link.name===socialNetwork)){
+                    updateItems=links.map(link=>{
+                        if(link.name===socialNetwork){
+                            return{
+                                ...link,
+                                enabled:true,
+                                id
+                            }
+
+                        }else{
+                            return link
+                        }
+                    })
+
+                }else{
+                    const newItem={
+                    //si esta habilitando una red social asignamos id
+                    ...selectedSocialNetwork,
+                    id
+                }
+                updateItems=[...links,newItem]
+
+                }
+                
+                //sumar
+            }else{
+                //si se desahbilita no borre todo el arreglo habilita la posicion en arreglo
+                const indexToUpdate=links.findIndex(link=>link.name===socialNetwork)
+                updateItems=links.map(link=>{
+                    if(link.name===socialNetwork){
+                        //red social que estamos desabilitando segun la logica
+                        return{
+                            //traemos una copia
+                            ...link,
+                            id:0,
+                            enabled:false
+                        }
+
+                    }else if(link.id>indexToUpdate){
+                        return{
+                            ...link,
+                            id:link.id-1
+                        }
+
+                    } else{
+                        return link
+                    }
+                })
+            }
+            console.log(updateItems)
+            
+
+            //agregamos a la base de datos
             queryclient.setQueryData(['user'],(prevData:User)=>{
                 return{
-                    //hacemos una copia de los datos
                     ...prevData,
-                    //Cambiamos el tipo de dato a arreglo a string(todo el state)
-                    links:JSON.stringify(updatedLinks)
+                    links:JSON.stringify(updateItems)
                 }
-
             })
             
     }

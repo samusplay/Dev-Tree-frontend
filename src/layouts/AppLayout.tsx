@@ -1,6 +1,6 @@
 
-import { useQuery } from '@tanstack/react-query'
-import { Navigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query';
+import { Navigate } from 'react-router-dom';
 
 import { getUser } from "../api/DevTreeAPI";
 import DevTree from "../components/DevTree";
@@ -23,7 +23,7 @@ export default function AppLayout() {
         return <Navigate to={'/auth/login'} />
     }
     //pasarle los props de data y renderiza el componente
-    console.log(data)
+    
     if(data) return <DevTree data={data} />
         
     
