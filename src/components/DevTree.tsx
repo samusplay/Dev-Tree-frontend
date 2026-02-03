@@ -8,62 +8,62 @@ import type { SocialNetwork, User } from "../types";
 import DevTreeLink from "./DevTreeLink";
 import NavigationTabs from "./NavigationTabs";
 
-type DevTreeProps={
+type DevTreeProps = {
     //le pasamos el prop de applayout donde esta ReactQuery
-    data:User
+    data: User
 
 }
-export default function DevTree({data}:DevTreeProps){
+export default function DevTree({ data }: DevTreeProps) {
     //renderizar links pasamos el valor inicial usar generic para que lo infiera
-    const [enabledlinks, setenablelinks]=useState<SocialNetwork[]>(JSON.parse(data.links).
-    filter((item:SocialNetwork)=>item.enabled))
+    const [enabledlinks, setenablelinks] = useState<SocialNetwork[]>(JSON.parse(data.links).
+        filter((item: SocialNetwork) => item.enabled))
 
     //darle el comportamniento reactivo
-    useEffect(()=>{
+    useEffect(() => {
         setenablelinks((JSON.parse(data.links).
-    filter((item:SocialNetwork)=>item.enabled)))
+            filter((item: SocialNetwork) => item.enabled)))
 
-    //cada vez que cambie data ejuctamos el codigo
-    },[data])
+        //cada vez que cambie data ejuctamos el codigo
+    }, [data])
 
     //cachar
-    const QueryClient=useQueryClient()
+    const QueryClient = useQueryClient()
     //la libreria no sabe que devolver para el movimiento dinamico
-    const handleDragEnd=(e:DragEndEvent)=>{
-        const {active,over}=e
+    const handleDragEnd = (e: DragEndEvent) => {
+        const { active, over } = e
         //hacer un comprobacion si puede ser null
-        if(over&&over.id){
-             //indetificar posicion previa
-        const prevIndex=enabledlinks.findIndex(link=>link.id===active.id)
-        //donde se suelta
-         const newIndex=enabledlinks.findIndex(link=>link.id===over.id)
-         //setearlo con su valor previo
-         const order=arrayMove(enabledlinks,prevIndex,newIndex)
-         //convertimos 
-         setenablelinks(order)
+        if (over && over.id) {
+            //indetificar posicion previa
+            const prevIndex = enabledlinks.findIndex(link => link.id === active.id)
+            //donde se suelta
+            const newIndex = enabledlinks.findIndex(link => link.id === over.id)
+            //setearlo con su valor previo
+            const order = arrayMove(enabledlinks, prevIndex, newIndex)
+            //convertimos 
+            setenablelinks(order)
 
-         //recuperar lo que estamos habilitando
-          const disableLinks:SocialNetwork[]=JSON.parse(data.links).filter((item:SocialNetwork)=>!item.enabled)
+            //recuperar lo que estamos habilitando
+            const disableLinks: SocialNetwork[] = JSON.parse(data.links).filter((item: SocialNetwork) => !item.enabled)
 
-         //escribir de nuevo el cache
-        const links=order.concat(disableLinks)
+            //escribir de nuevo el cache
+            const links = order.concat(disableLinks)
 
-         QueryClient.setQueryData(['user'],(prevData:User)=>{
-            return{
-                ...prevData,
-                links:JSON.stringify(links)
-            }
+            QueryClient.setQueryData(['user'], (prevData: User) => {
+                return {
+                    ...prevData,
+                    links: JSON.stringify(links)
+                }
 
-         })
+            })
 
         }
-       
+
 
     }
 
-    
-    
-    return(
+
+
+    return (
         <>
             <header className="bg-slate-800 py-5">
                 <div className="mx-auto max-w-5xl flex flex-col md:flex-row items-center md:justify-between">
@@ -88,7 +88,7 @@ export default function DevTree({data}:DevTreeProps){
                     <div className="flex justify-end">
                         <Link
                             className="font-bold text-right text-slate-800 text-2xl"
-                            to={''}
+                            to={`/${data.handle}`}
                             target="_blank"
                             rel="noreferrer noopener"
                         >Visitar Mi Perfil:/{data.handle}</Link>
@@ -101,19 +101,19 @@ export default function DevTree({data}:DevTreeProps){
                         <div className="w-full md:w-96 bg-slate-800 px-5 py-10 space-y-6">
                             <p className="text-4xl text-center text-white">{data.handle}</p>
 
-                            {data.image &&<img src={data.image} alt=' Imagen perfil' className="mx-auto max-w-[250px]"/>
+                            {data.image && <img src={data.image} alt=' Imagen perfil' className="mx-auto max-w-[250px]" />
 
                             }
                             <p className="text-center text-lg font-black text-white">{data.description}</p>
-                            
+
                             <DndContext
-                            collisionDetection={closestCenter}
-                            onDragEnd={handleDragEnd}
+                                collisionDetection={closestCenter}
+                                onDragEnd={handleDragEnd}
                             >
                                 <div className="mt-20 flex flex-col gap-5">
                                     <SortableContext
-                                    items={enabledlinks}
-                                    strategy={verticalListSortingStrategy}
+                                        items={enabledlinks}
+                                        strategy={verticalListSortingStrategy}
                                     >
                                         {enabledlinks.map(link => (
                                             //inyectamos componente y pasamos el key debe esperar el valor link
@@ -125,7 +125,7 @@ export default function DevTree({data}:DevTreeProps){
                                 </div>
 
                             </DndContext>
-                           
+
 
                         </div>
                     </div>

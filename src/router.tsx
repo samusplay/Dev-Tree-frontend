@@ -1,10 +1,11 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import LoginView from './views/LoginView'
-import RegisterView from './views/RegisterView'
-import AuthLayout from './layouts/AuthLayout'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
+import AuthLayout from './layouts/AuthLayout'
+import HandleView from './views/HandleView'
 import LinkTreeView from './views/LinkTreeView'
+import LoginView from './views/LoginView'
 import ProfileView from './views/ProfileView'
+import RegisterView from './views/RegisterView'
 
 export default function Router() {
 
@@ -19,7 +20,10 @@ export default function Router() {
                 <Route path='/admin' element={<AppLayout />}>
                     <Route index={true} element={<LinkTreeView />} />
                     <Route path='profile' element={<ProfileView />} />
+                </Route>
 
+                <Route path='/:handle' element={<AuthLayout />}>
+                    <Route element={<HandleView />} index={true} />
                 </Route>
 
             </Routes>
