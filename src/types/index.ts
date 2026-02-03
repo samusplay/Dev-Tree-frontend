@@ -10,6 +10,10 @@ export type User={
    
 
 }
+//type handle view utilytypes
+export type UserHandle=Pick<User,'description'|'handle'|'image'|'links'|'name'>
+
+
 //los pick como solo toman valores especificos no hay que hacer cambios
 export type RegisterForm=Pick<User,'handle'|'email'|'name'>&{
     password:string

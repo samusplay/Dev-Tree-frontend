@@ -1,7 +1,7 @@
 import { isAxiosError } from "axios"
 
 import api from "../config/axios"
-import type { User } from "../types"
+import type { User, UserHandle } from "../types"
 
 export async function getUser() {
     //variable del token
@@ -69,7 +69,7 @@ export async function getUserByHandle(handle:string) {
     try {
        
         //usamos Generic y poner metodo de api , pasarle los datos
-        const { data } = await api(`/${handle}`)
+        const { data } = await api<UserHandle>(`/${handle}`)
         //retornamos data
         return data
         //Traer los errores desde el backend
