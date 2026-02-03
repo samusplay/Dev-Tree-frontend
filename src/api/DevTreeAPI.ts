@@ -61,3 +61,25 @@ export async function uploadImage(file: File) {
 
     }
 }
+
+//funcion para obtener el usuario
+export async function getUserByHandle(handle:string) {
+    //variable del token
+
+    try {
+       
+        //usamos Generic y poner metodo de api , pasarle los datos
+        const { data } = await api(`/${handle}`)
+        //retornamos data
+        return data
+        //Traer los errores desde el backend
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            //Mostrar mensajes desde el backend
+            console.log(error.response.data.error)
+            throw new Error(error.response.data.error)
+
+        }
+
+    }
+}
