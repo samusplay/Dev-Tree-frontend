@@ -1,16 +1,18 @@
-import { Link } from "react-router-dom";
-import { useForm } from 'react-hook-form'
-import {isAxiosError} from 'axios'
-import {toast}from 'sonner'
-import type{RegisterForm}from '../types'
+import { isAxiosError } from 'axios';
+import { useForm } from 'react-hook-form';
+import { Link, useLocation } from "react-router-dom";
+import { toast } from 'sonner';
 import ErrorMessage from "../components/ErrorMessage";
 import api from "../config/axios";
+import type { RegisterForm } from '../types';
 export default function RegisterView() {
+    //para pasar el handle que el usuario busco
+    const location=useLocation()
     //Objeto para errores
     const initialValues= {
         name: '',
         email: '',
-        handle: '',
+        handle: location.state.handle||'',
         password: '',
         password_confirmation: ''
 
