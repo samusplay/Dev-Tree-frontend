@@ -11,7 +11,7 @@ export default function AppLayout() {
         queryFn: getUser,
         //llave que va identificar la consulta
         queryKey: ['user'],
-        retry: 1, // cuantas veces se conecta 
+        retry: 2, // cuantas veces se conecta 
         refetchOnWindowFocus: false //para que cada solictud no mande 
 
     })

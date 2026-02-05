@@ -1,6 +1,6 @@
 import { isAxiosError } from 'axios';
 import { useForm } from 'react-hook-form';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from 'sonner';
 import ErrorMessage from "../components/ErrorMessage";
 import api from "../config/axios";
@@ -8,11 +8,12 @@ import type { RegisterForm } from '../types';
 export default function RegisterView() {
     //para pasar el handle que el usuario busco
     const location=useLocation()
+    const navigate=useNavigate()
     //Objeto para errores
     const initialValues= {
         name: '',
         email: '',
-        handle: location.state.handle||'',
+        handle: location?.state?.handle||'',
         password: '',
         password_confirmation: ''
 
@@ -33,12 +34,11 @@ export default function RegisterView() {
         //Entramos directamente a data
         try{
             const {data}=await api.post(`/auth/register`,formData)
-            console.log(data)
             //Agregamos Toast y le pasamos data la respuesta
             toast.success(data)
             //reiniciar el formulario
             reset()
-
+            navigate('/auth/login')
         //Traer los errores desde el backend
         }catch(error){
             if(isAxiosError(error)&&error.response){
